@@ -2,7 +2,6 @@ import Mapbox, {
   Camera,
   CircleLayer,
   Images,
-  LocationPuck,
   MapView,
   ShapeSource,
   StyleURL,
@@ -15,7 +14,6 @@ import scooters from '~/data/scooters.json';
 Mapbox.setAccessToken(process.env.MAX_BOX_KEY || '');
 
 export default function Map() {
-  // 올바른 GeoJSON 포인트 배열 생성
   const points = scooters.map((scooter) => point([scooter.long, scooter.lat]));
 
   return (

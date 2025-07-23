@@ -4,8 +4,7 @@ import { OnPressEvent } from '@rnmapbox/maps/lib/typescript/src/types/OnPressEve
 import scooters from '~/data/scooters.json';
 import { featureCollection, point } from '@turf/helpers';
 import { useScooter } from '~/providers/ScooterProvider';
-//chatgpt.com/
-https: import pin from '~/assets/pin.png';
+import pin from '~/assets/pin.png';
 
 export default function ScooterMarker() {
   const points = scooters.map((scooter) => point([scooter.long, scooter.lat], { scooter }));

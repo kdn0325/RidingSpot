@@ -14,33 +14,26 @@ import scooters from '~/data/scooters.json';
 Mapbox.setAccessToken(process.env.MAX_BOX_KEY || '');
 
 export default function Map() {
-  const points = scooters.map((scooter) => point([scooter.long, scooter.lat]));
+  const points = scooters.map((scooter) => point([scooter.long, scooter.lat], { id: scooter.id }));
+  const scootersFeatures = featureCollection(points);
 
   return (
     <MapView style={{ flex: 1 }} styleURL={StyleURL.Dark}>
-      <Camera followZoomLevel={16} followUserLocation />
-      {/* <LocationPuck puckBearingEnabled puckBearing="heading" pulsing={{ isEnabled: true }} /> */}
-
+      <Camera followZoomLevel={10} followUserLocation />
       <ShapeSource
         id="scooters"
-        cluster
-        shape={featureCollection(points)}
-        onPress={(e) => console.log(JSON.stringify(e, null, 2))}>
-        <SymbolLayer
-          id="clusters-count"
-          style={{
-            textField: ['get', 'point_count'],
-            textSize: 18,
-            textColor: '#ffffff',
-            textPitchAlignment: 'map',
-          }}
-        />
+        cluster={true}
+        clusterRadius={50}
+        shape={scootersFeatures}
+        onPress={(e) => {
+          e.features.forEach((feature) => {
+            console.log('Feature:', feature.properties);
+          });
+        }}>
         <CircleLayer
           id="clusters"
-          belowLayerID="clusters-count"
           filter={['has', 'point_count']}
           style={{
-            circlePitchAlignment: 'map',
             circleColor: '#42E100',
             circleRadius: 20,
             circleOpacity: 1,
@@ -48,6 +41,19 @@ export default function Map() {
             circleStrokeColor: 'white',
           }}
         />
+        <SymbolLayer
+          id="clusters-count"
+          filter={['has', 'point_count']}
+          style={{
+            textField: ['get', 'point_count'],
+            textSize: 18,
+            textColor: '#ffffff',
+            textFont: ['DIN Offc Pro Medium', 'Arial Unicode MS Regular'],
+            textAllowOverlap: true,
+            textIgnorePlacement: true,
+          }}
+        />
+
         <SymbolLayer
           id="scooter-icons"
           filter={['!', ['has', 'point_count']]}

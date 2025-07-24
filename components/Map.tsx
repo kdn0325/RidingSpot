@@ -14,9 +14,13 @@ export default function Map() {
   return (
     <MapView
       style={{ flex: 1 }}
+      rotateEnabled={false}
       styleURL={StyleURL.Dark}
+      scaleBarEnabled={false}
+      logoEnabled={false}
+      compassEnabled={false}
       onDidFinishLoadingMap={() => console.log('Map loaded')}>
-      <Camera followZoomLevel={10} followUserLocation />
+      <Camera followZoomLevel={16} followUserLocation />
       <LocationPuck puckBearingEnabled puckBearing="heading" pulsing={{ isEnabled: true }} />
       <ScooterMarker />
       {directionCoordinate && <LineRoutes coordinates={directionCoordinate} />}

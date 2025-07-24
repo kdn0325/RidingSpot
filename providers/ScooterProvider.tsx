@@ -4,7 +4,7 @@ import * as Location from 'expo-location';
 import distance from '@turf/distance';
 import { point } from '@turf/helpers';
 import { ScooterContextType } from '~/types/provider';
-import { MapboxDirections } from '~/types/direction';
+import { MapboxDirections } from '~/types/directionsResponse';
 import { Scooter } from '~/types/Scooter';
 
 const scooterContext = createContext<ScooterContextType | undefined>(undefined);

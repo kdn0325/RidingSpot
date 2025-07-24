@@ -1,61 +1,38 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import { getDirections } from '~/service/direction';
 import * as Location from 'expo-location';
-
-type Scooter = {
-  id: number;
-  lat: number;
-  long: number;
-};
-
-export interface MapboxDirections {
-  code: string;
-  uuid: string;
-  waypoints: {
-    distance: number;
-    name: string;
-    location: [number, number];
-  }[];
-  routes: {
-    distance: number;
-    duration: number;
-    geometry: {
-      coordinates: [number, number][];
-      type: string;
-    };
-    legs: {
-      via_waypoints: [];
-      admins: {
-        iso_3166_1: string;
-        iso_3166_1_alpha3: string;
-      }[];
-      distance: number;
-      duration: number;
-      steps: [];
-      summary: string;
-      weight: number;
-    }[];
-    weight: number;
-    weight_name: string;
-  }[];
-}
-
-type ScooterContextType = {
-  selectedScooter?: Scooter;
-  setSelectedScooter: (scooter: Scooter) => void;
-  direction?: MapboxDirections;
-  directionCoordinate?: number[][];
-  routeTime?: number;
-  routeDistance?: number;
-};
+import distance from '@turf/distance';
+import { point } from '@turf/helpers';
+import { ScooterContextType } from '~/types/provider';
+import { MapboxDirections } from '~/types/direction';
+import { Scooter } from '~/types/Scooter';
 
 const scooterContext = createContext<ScooterContextType | undefined>(undefined);
 
 export default function ScooterProvider({ children }: PropsWithChildren) {
   const [selectedScooter, setSelectedScooter] = useState<Scooter>();
   const [direction, setDirection] = useState<MapboxDirections>();
+  const [isNearby, setIsNearby] = useState(false);
 
   useEffect(() => {
+    const subscription = Location.watchPositionAsync({ distanceInterval: 10 }, (newLocation) => {
+      if (selectedScooter) {
+        const from = point([newLocation.coords.longitude, newLocation.coords.latitude]);
+        const to = point([selectedScooter.long, selectedScooter.lat]);
+        const calculatedDistance = distance(from, to, { units: 'meters' });
+        // 50m 이내에 있으면 활성화
+        if (calculatedDistance < 50) {
+          setIsNearby(true);
+        }
+      }
+    });
+    return () => {
+      subscription.then((sub) => sub.remove());
+    };
+  }, [selectedScooter]);
+
+  useEffect(() => {
+    // 선택된 스쿠터가 변경되면 방향을 가져옵니다.
     const fetchDirections = async () => {
       if (!selectedScooter) return;
       const currentLocation = await Location.getCurrentPositionAsync();
@@ -63,14 +40,13 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
         [currentLocation.coords.longitude, currentLocation.coords.latitude],
         [selectedScooter.long, selectedScooter.lat]
       );
-      console.log('Direction:', newDirection);
+
       setDirection(newDirection);
     };
 
     fetchDirections();
   }, [selectedScooter]);
 
-  console.log('ScooterProvider initialized with selectedScooter:', selectedScooter);
   return (
     <scooterContext.Provider
       value={{
@@ -78,8 +54,9 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
         setSelectedScooter,
         direction,
         directionCoordinate: direction?.routes?.[0].geometry.coordinates,
-        routeTime: direction?.routes?.[0].duration,
-        routeDistance: direction?.routes?.[0].distance,
+        duration: direction?.routes?.[0].duration,
+        distance: direction?.routes?.[0].distance,
+        isNearby,
       }}>
       {children}
     </scooterContext.Provider>

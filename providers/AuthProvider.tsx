@@ -4,11 +4,14 @@ import { ActivityIndicator } from 'react-native';
 import { supabase } from '~/lib/supabase';
 
 type AuthContextType = {
-  session: Session | null;
   isAuthenticated: boolean;
+  session?: Session | null;
+  user_id?: string;
 };
 
-const AuthContext = createContext<AuthContextType>({});
+const AuthContext = createContext<AuthContextType>({
+  isAuthenticated: false,
+});
 
 export default function AuthProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<Session | null>(null);
@@ -28,13 +31,18 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     return <ActivityIndicator />;
   }
 
-  console.log('AuthProvider session:', session?.user);
-
   return (
-    <AuthContext.Provider value={{ session, isAuthenticated: !!session?.user }}>
+    <AuthContext.Provider
+      value={{ session, isAuthenticated: !!session?.user, user_id: session?.user.id }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an <AuthProvider>');
+  }
+  return context;
+};

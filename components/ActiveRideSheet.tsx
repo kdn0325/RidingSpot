@@ -21,7 +21,6 @@ export default function ActiveRideSheet() {
       ref={bottomSheetRef}
       index={-1}
       snapPoints={[200]}
-      enableDynamicSizing
       backgroundStyle={styles.bottomSheetBackground}
       enablePanDownToClose>
       {ride && (

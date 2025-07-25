@@ -39,7 +39,6 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     const subscription = Location.watchPositionAsync({ distanceInterval: 10 }, (newLocation) => {
       if (selectedScooter) {
-        console.log('newLocation:', newLocation.coords.latitude, newLocation.coords.longitude);
         const from = point([newLocation.coords.longitude, newLocation.coords.latitude]);
         const to = point([selectedScooter.long, selectedScooter.lat]);
         const calculatedDistance = distance(from, to, { units: 'meters' });
@@ -67,7 +66,13 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
       setDirection(newDirection);
     };
 
-    fetchDirections();
+    if (selectedScooter) {
+      fetchDirections();
+      setIsNearby(false); // 스쿠터 선택 시 근처 여부 초기화
+    } else {
+      setDirection(undefined);
+      setIsNearby(false);
+    }
   }, [selectedScooter]);
 
   return (
@@ -87,7 +92,7 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
   );
 }
 
-export const useScooter = () => {
+export const useScooter = (): ScooterContextType => {
   const context = useContext(scooterContext);
   if (!context) {
     throw new Error('useScooter must be used within a <ScooterProvider>');

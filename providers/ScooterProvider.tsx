@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import { createContext, PropsWithChildren, use, useContext, useEffect, useState } from 'react';
 import { getDirections } from '~/service/direction';
 import * as Location from 'expo-location';
 import distance from '@turf/distance';
@@ -6,17 +6,40 @@ import { point } from '@turf/helpers';
 import { ScooterContextType } from '~/types/ScooterProvider';
 import { MapboxDirections } from '~/types/Directions';
 import { Scooter } from '~/types/Scooter';
+import { supabase } from '~/lib/supabase';
+import { Alert } from 'react-native';
 
 const scooterContext = createContext<ScooterContextType | undefined>(undefined);
 
 export default function ScooterProvider({ children }: PropsWithChildren) {
+  const [nearbyScooters, setNearbyScooters] = useState<Scooter[]>([]);
   const [selectedScooter, setSelectedScooter] = useState<Scooter>();
   const [direction, setDirection] = useState<MapboxDirections>();
   const [isNearby, setIsNearby] = useState(false);
 
   useEffect(() => {
+    const fetchScooters = async () => {
+      const location = await Location.getCurrentPositionAsync();
+      const { error, data } = await supabase.rpc('nearby_scooters', {
+        lat: location.coords.latitude,
+        long: location.coords.longitude,
+        // 1km 이내의 스쿠터를 가져옴
+        max_dist_meters: 1000,
+      });
+      if (error) {
+        Alert.alert('Failed to fetch scooters');
+      } else {
+        setNearbyScooters(data);
+      }
+    };
+
+    fetchScooters();
+  }, []);
+
+  useEffect(() => {
     const subscription = Location.watchPositionAsync({ distanceInterval: 10 }, (newLocation) => {
       if (selectedScooter) {
+        console.log('newLocation:', newLocation.coords.latitude, newLocation.coords.longitude);
         const from = point([newLocation.coords.longitude, newLocation.coords.latitude]);
         const to = point([selectedScooter.long, selectedScooter.lat]);
         const calculatedDistance = distance(from, to, { units: 'meters' });
@@ -57,6 +80,7 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
         duration: direction?.routes?.[0].duration,
         distance: direction?.routes?.[0].distance,
         isNearby,
+        nearbyScooters,
       }}>
       {children}
     </scooterContext.Provider>

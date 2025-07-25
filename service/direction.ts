@@ -1,11 +1,11 @@
 import ky, { HTTPError } from 'ky';
-import { MAPBOX_TOKEN } from '~/constant';
+import { EXPO_PUBLIC_MAPBOX_TOKEN } from '~/constant';
 import { MapboxDirections } from '~/types/Directions';
 
 const BASE_URL = 'https://api.mapbox.com/directions/v5/mapbox/walking';
 
 export async function getDirections(from: [number, number], to: [number, number]) {
-  if (!MAPBOX_TOKEN) throw new Error('❌ MAPBOX_TOKEN is undefined');
+  if (!EXPO_PUBLIC_MAPBOX_TOKEN) throw new Error('❌ EXPO_PUBLIC_MAPBOX_TOKEN is undefined');
 
   try {
     return await ky
@@ -17,7 +17,7 @@ export async function getDirections(from: [number, number], to: [number, number]
           geometries: 'geojson',
           overview: 'full',
           steps: 'false',
-          access_token: MAPBOX_TOKEN,
+          access_token: EXPO_PUBLIC_MAPBOX_TOKEN,
         },
       })
       .json<MapboxDirections>();

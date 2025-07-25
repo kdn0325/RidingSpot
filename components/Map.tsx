@@ -4,9 +4,9 @@ import { useScooter } from '~/providers/ScooterProvider';
 
 import LineRoutes from './LineRoutes';
 import ScooterMarker from './ScooterMarker';
-import { MAPBOX_TOKEN } from '~/constant';
+import { EXPO_PUBLIC_MAPBOX_TOKEN } from '~/constant';
 
-Mapbox.setAccessToken(MAPBOX_TOKEN || '');
+Mapbox.setAccessToken(EXPO_PUBLIC_MAPBOX_TOKEN || '');
 
 export default function Map() {
   const { directionCoordinate } = useScooter();

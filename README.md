@@ -1,5 +1,12 @@
 # 📍 Mapbox 기반 스쿠터 공유 서비스
 
+<img 
+  src="https://github-production-user-asset-6210df.s3.amazonaws.com/91298955/470898935-edf502ab-3d50-49fa-92b2-c3843e50cf09.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250725%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250725T172105Z&X-Amz-Expires=300&X-Amz-Signature=43a287ae84c2afd48900e586d771cdd729fd0d1c69a0747fb7f3db89bc0ecc9d&X-Amz-SignedHeaders=host" 
+  alt="Image" 
+  width="300" 
+  style="height: auto;" 
+/>
+
 ## 2025.07.23 ~
 
 - Mapbox 기반 실시간 위치 추적 및 지도 렌더링

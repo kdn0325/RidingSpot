@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import ActiveRideSheet from '~/components/ActiveRideSheet';
 import { Button } from '~/components/Button';
 import Map from '~/components/Map';
 import SelectedScooterSheet from '~/components/SelectedScooterSheet';
@@ -11,6 +12,7 @@ export default function Home() {
       <Map />
       <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
       <SelectedScooterSheet />
+      <ActiveRideSheet />
     </>
   );
 }

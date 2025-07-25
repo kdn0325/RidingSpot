@@ -42,8 +42,8 @@ export default function ScooterProvider({ children }: PropsWithChildren) {
         const from = point([newLocation.coords.longitude, newLocation.coords.latitude]);
         const to = point([selectedScooter.long, selectedScooter.lat]);
         const calculatedDistance = distance(from, to, { units: 'meters' });
-        // 50m 이내에 있으면 활성화
-        if (calculatedDistance < 50) {
+        // 500m 이내에 있으면 활성화
+        if (calculatedDistance < 500) {
           setIsNearby(true);
         }
       }

@@ -7,8 +7,8 @@ import { useScooter } from '~/providers/ScooterProvider';
 import pin from '~/assets/pin.png';
 
 export default function ScooterMarker() {
-  const points = scooters.map((scooter) => point([scooter.long, scooter.lat], { scooter }));
-  const { setSelectedScooter } = useScooter();
+  const { setSelectedScooter, nearbyScooters } = useScooter();
+  const points = nearbyScooters.map((scooter) => point([scooter.long, scooter.lat], { scooter }));
 
   const onPointPress = async (event: OnPressEvent) => {
     if (event.features[0].properties?.scooter) {

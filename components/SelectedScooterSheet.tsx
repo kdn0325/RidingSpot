@@ -5,16 +5,22 @@ import { useScooter } from '~/providers/ScooterProvider';
 import pin from '~/assets/pin.png';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Button } from './Button';
+import { useRide } from '~/providers/RideProvider';
 
 export default function SelectedScooterSheet() {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { selectedScooter, direction, duration, distance, isNearby } = useScooter();
+  const { selectedScooter, setSelectedScooter, direction, duration, distance, isNearby } =
+    useScooter();
 
   useEffect(() => {
     if (selectedScooter) {
       bottomSheetRef.current?.expand();
+    } else {
+      bottomSheetRef.current?.close();
     }
   }, [selectedScooter]);
+
+  const { startRide } = useRide();
 
   const names = direction?.waypoints?.find((wp) => wp.name)?.name;
 
@@ -25,6 +31,7 @@ export default function SelectedScooterSheet() {
       snapPoints={[200]}
       enableDynamicSizing
       backgroundStyle={styles.bottomSheetBackground}
+      onClose={() => setSelectedScooter(undefined)}
       enablePanDownToClose>
       <BottomSheetView style={styles.bottomSheetView}>
         <View style={styles.headerRow}>
@@ -53,7 +60,14 @@ export default function SelectedScooterSheet() {
 
         {/* 하단 뷰 */}
         <View>
-          <Button title="시작" disabled={!isNearby} />
+          <Button
+            title="시작"
+            onPress={() => {
+              selectedScooter?.id && startRide(selectedScooter.id);
+              setSelectedScooter(undefined);
+            }}
+            disabled={!isNearby}
+          />
         </View>
       </BottomSheetView>
     </BottomSheet>

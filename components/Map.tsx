@@ -12,7 +12,7 @@ const customStyleURL = 'mapbox://styles/abelkim/cmdfs86wj03jd01r40yi091g2';
 
 export default function Map() {
   const { directionCoordinate } = useScooter();
-  const { ride } = useRide();
+  const { ride, rideRoute } = useRide();
 
   const showMarkers = !ride;
 
@@ -26,6 +26,8 @@ export default function Map() {
       compassEnabled={false}>
       <Camera followZoomLevel={16} followUserLocation />
       <LocationPuck puckBearingEnabled puckBearing="heading" pulsing={{ isEnabled: true }} />
+
+      {rideRoute.length > 0 && <LineRoutes id="rideRoute" coordinates={rideRoute} />}
       {showMarkers && (
         <>
           <ScooterMarker />

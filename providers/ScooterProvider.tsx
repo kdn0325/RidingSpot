@@ -3,8 +3,8 @@ import { getDirections } from '~/service/direction';
 import * as Location from 'expo-location';
 import distance from '@turf/distance';
 import { point } from '@turf/helpers';
-import { ScooterContextType } from '~/types/provider';
-import { MapboxDirections } from '~/types/directionsResponse';
+import { ScooterContextType } from '~/types/ScooterProvider';
+import { MapboxDirections } from '~/types/Directions';
 import { Scooter } from '~/types/Scooter';
 
 const scooterContext = createContext<ScooterContextType | undefined>(undefined);

@@ -1,5 +1,5 @@
 import type { Scooter } from '~/types/Scooter';
-import { MapboxDirections } from './directionsResponse';
+import { MapboxDirections } from './Directions';
 
 export type ScooterContextType = {
   selectedScooter?: Scooter;

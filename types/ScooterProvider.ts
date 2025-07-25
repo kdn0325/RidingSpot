@@ -9,4 +9,5 @@ export type ScooterContextType = {
   duration?: number;
   distance?: number;
   isNearby?: boolean;
+  nearbyScooters: Scooter[];
 };

@@ -1,4 +1,3 @@
-import { StyleSheet } from 'react-native';
 import { LineLayer, ShapeSource } from '@rnmapbox/maps';
 import { Position } from '@rnmapbox/maps/lib/typescript/src/types/Position';
 
@@ -27,5 +26,3 @@ export default function LineRoutes({ coordinates }: { coordinates: Position[] })
     </ShapeSource>
   );
 }
-
-const styles = StyleSheet.create({});

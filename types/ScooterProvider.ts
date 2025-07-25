@@ -3,7 +3,7 @@ import { MapboxDirections } from './Directions';
 
 export type ScooterContextType = {
   selectedScooter?: Scooter;
-  setSelectedScooter: (scooter: Scooter) => void;
+  setSelectedScooter: (scooter: Scooter | undefined) => void;
   direction?: MapboxDirections;
   directionCoordinate?: number[][];
   duration?: number;
